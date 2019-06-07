@@ -7,28 +7,36 @@ Answer *get_indices_of_item_weights(int *weights, int length, int limit)
 {
   HashTable *ht = create_hash_table(16);
 
+  // Set up hash table
   for (int i = 0; i < length; i++)
   {
     hash_table_insert(ht, weights[i], i);
   }
 
+  // Loop through weights array
   for (int i = 0; i < length; i++)
   {
+    // Check to see if a weight exists that would add with the current weight to equal the limit
     int index = hash_table_retrieve(ht, (limit - weights[i]));
     if (index != -1)
     {
+      // If weight found check which index is bigger for ordering in the answer struct
       if (i > index)
       {
+        // Create malloced answer struct, cleanup memory and return answer
         Answer *a = malloc(sizeof(Answer));
         a->index_1 = i;
         a->index_2 = index;
+        destroy_hash_table(ht);
         return a;
       }
       else
       {
+        // Create malloced answer struct, cleanup memory and return answer
         Answer *a = malloc(sizeof(Answer));
         a->index_1 = index;
         a->index_2 = i;
+        destroy_hash_table(ht);
         return a;
       }
     }
@@ -37,7 +45,7 @@ Answer *get_indices_of_item_weights(int *weights, int length, int limit)
       continue;
     }
   }
-
+  destroy_hash_table(ht);
   return NULL;
 }
 
